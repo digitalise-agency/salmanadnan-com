@@ -1,4 +1,4 @@
-# Assets checklist — salmanadnan.com
+# Assets checklist: salmanadnan.com
 
 Drop real assets here, then update the HTML as noted.
 
