@@ -1,0 +1,125 @@
+% ===========================================================================
+\subsection{\file{new-design-reference/netlify.toml}}
+% ===========================================================================
+
+\textbf{TOML, 11 lines.} Instructions for a hosting service called Netlify: how to
+publish the folder, and four security headers to send with every response.
+
+\begin{provenance}{new-design-reference/netlify.toml}
+Hand-written, added in the first commit \code{1f7ed12} and never edited. It is
+\textbf{byte for byte identical} to the sibling repository's copy, which was
+verified by comparing the two files directly: \code{diff} reports no differences at
+all. Every other file in this pair differs somewhere; this one does not.
+
+That is itself the evidence for how it got here: it is the one file in the design
+that carried no site-specific content, so it was reused without needing a single
+edit. The structure follows Netlify's own documented configuration format.
+\textbf{Confidence: certain for hand-written and for the identity with the sibling,
+both checked directly; no specific template is claimed.}
+\end{provenance}
+
+\subsubsection*{Why it exists}
+
+Today, for no reason at all: nothing reads it.
+
+The honest reading of the history is that the site was first expected to be hosted
+on Netlify, a common choice for a static page like this, and the plan changed two
+commits later. Commit \code{692e162} on 2026-07-28 is titled in part ``VPS rsync
+deploy'', which is the moment Netlify stopped being the destination. This file was
+never removed.
+
+\begin{jargon}{TOML}
+A file format for configuration designed to be obvious to read. A name in square
+brackets starts a section; \code{name = "value"} sets a setting. Double square
+brackets, as on line 5, mean ``another entry in a list of these'', so a file can
+carry several header rules.
+\end{jargon}
+
+\subsubsection*{Line by line}
+
+\begin{lstlisting}[firstnumber=1,caption={\file{netlify.toml}, lines 1--11}]
+[build]
+  publish = "."
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+\end{lstlisting}
+
+Lines 1 to 3 describe how to build the site. \code{publish = "."} means publish this
+directory itself, and \code{command = ""} means there is no build step to run first.
+Those two lines are the entire ``no build step'' decision, stated to a hosting
+provider.
+
+Line 5 opens a headers rule and line 6 applies it to \code{/*}, every path on the
+site.
+
+\begin{jargon}{HTTP header}
+An extra line of information a web server sends alongside a file, which the visitor
+never sees. Some describe the file; the four below are instructions to the browser
+about what it is allowed to do with the page.
+\end{jargon}
+
+Line 8, \code{X-Frame-Options = "DENY"}, forbids any other site from embedding this
+page inside a frame. That defends against clickjacking, where an attacker loads your
+real page invisibly over their own and tricks a visitor into clicking your buttons
+while believing they are clicking something else.
+
+Line 9, \code{X-Content-Type-Options = "nosniff"}, tells the browser to believe the
+declared type of every file rather than guessing from its contents. Guessing is a
+historical browser behaviour that can be manipulated into treating an uploaded image
+as a script.
+
+Line 10, \code{Referrer-Policy = "strict-origin-when-cross-origin"}, limits what is
+disclosed when a visitor follows a link away. Within this site the full address is
+passed; to another site only the domain; to an insecure site nothing at all. This is
+the modern default and a sensible privacy choice.
+
+Line 11, \code{Permissions-Policy}, switches off three device capabilities for this
+page entirely: camera, microphone and location. The empty parentheses mean ``nobody,
+not even this page''. The page is static text and gradients and needs none of them,
+so turning them off means a future compromise cannot quietly request them.
+
+\begin{keyidea}{These four headers are good practice and they are not in effect}
+Every one is a sensible defensive choice, and the file they live in is read by a
+service this project does not use. The page is served by Caddy on the agency VPS,
+which never sees this file.
+
+Moving these four lines into the Caddy configuration on the server would take a few
+minutes and make them real. As things stand, the repository looks like it has
+thought about security headers and the live site has none of them.
+\end{keyidea}
+
+\subsubsection*{What it connects to}
+
+Nothing in this repository refers to it. Netlify appears nowhere else in the tree
+and no workflow reads it. The deploy workflow does not even exclude it, so if that
+workflow were restored this file would be copied to the VPS where Caddy would
+ignore it.
+
+\subsubsection*{Concepts introduced}
+
+TOML as a configuration format, and the four HTTP response headers above. No
+concept here appears anywhere else in the repository, which is another way of
+saying this file is disconnected from everything.
+
+\subsubsection*{How it breaks}
+
+It cannot break, because nothing reads it. The realistic failure is the opposite: a
+future maintainer reads this file, concludes the site sends these headers, and
+builds on an assumption that is false.
+
+\begin{honest}{An unused configuration file is worse than no configuration file}
+This is a small file and a real trap. It states four security guarantees the live
+site does not provide, and nothing in the repository indicates it is inert. Either
+delete it, or move its contents to the Caddy configuration and delete it. Leaving it
+is the only option with no upside.
+
+The identical file sits in the sibling repository with the identical problem, so
+fixing one should mean fixing both.
+\end{honest}

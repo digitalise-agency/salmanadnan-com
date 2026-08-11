@@ -1,0 +1,1380 @@
+% ===========================================================================
+\subsection{\file{new-design-reference/css/site.css}}
+% ===========================================================================
+
+\textbf{CSS, 575 lines.} Every visual decision: colours, typefaces, spacing,
+layout, movement, and how all of it rearranges on a narrow screen. It is the
+longest file here and, in the judgement of this document, the most valuable thing
+in the repository.
+
+\begin{provenance}{new-design-reference/css/site.css}
+Hand-written, and it states its own lineage in its second line: \code{Personal
+brand site. Shares design tokens with ai.digitalise.agency.} That is a direct
+statement by the author that the naming scheme came from the sibling project, and
+comparing the two token blocks confirms it: identical names, identical structure,
+different values.
+
+It arrived in the first commit \code{1f7ed12} and was substantially edited once, by
+\code{05210af} (``Differentiate to orange brand''). No generator banner, no vendor
+prefix block of the sort a preprocessor emits, and no minified section: it is
+written to be read. \textbf{Confidence: certain for hand-written, certain for the
+token lineage, which rests on the author's own comment and is corroborated by the
+files.}
+\end{provenance}
+
+\subsubsection*{Why it exists}
+
+Without this file the page contains every word it needs and looks like a 1994
+document: black serif text on white, one column, no colour. Nothing would be
+broken and nothing would be persuasive. The two-column hero would collapse into a
+stack, and the three floating badges would appear as three small blocks of text
+under the placeholder.
+
+\subsubsection*{Line by line}
+
+\paragraph{Lines 1 to 25: the header, and the token block.}
+
+\begin{lstlisting}[firstnumber=1,caption={\file{css/site.css}, lines 1--25}]
+/* salmanadnan.com · site.css
+   Personal brand site. Shares design tokens with ai.digitalise.agency. */
+
+/* ─── TOKENS ─── */
+:root {
+  --s0:    #05070d;
+  --s1:    #0e1118;
+  --s2:    #161b26;
+  --ink1:  #f4f7fc;
+  --ink2:  #c3ccdd;
+  --ink3:  #93a0b8;
+  --accent:  #ff6719;   /* orange, personal brand, distinct from agency blue */
+  --accentH: #ff8c4a;
+  --accent2: #1967ff;
+  --green:   #34d399;
+  --border:  #24201e;
+  --borderS: #1c1814;
+  --font-d: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-b: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --r:   16px;
+  --rsm: 10px;
+  --ease: cubic-bezier(.22,1,.36,1);
+  --maxw: 1240px;
+  --shadow: 0 8px 40px rgba(0,0,0,.45);
+}
+\end{lstlisting}
+
+Lines 1 and 2 are a comment. In CSS, anything between \code{/*} and \code{*/} is
+ignored, and unlike HTML there is only this one comment form. These two lines carry
+the file's entire provenance.
+
+Line 4 is the first of twelve section banners drawn with box-drawing characters,
+the author's navigation aid.
+
+Line 5 opens the token block. \code{:root} matches the document's outermost
+element, \code{<html>}. Custom properties defined there are inherited by every
+element on the page, which is exactly why token blocks are written against
+\code{:root}: it is the one place a definition reaches everything.
+
+The nineteen tokens fall into six groups:
+
+\begin{table}[H]\centering\small
+\begin{tabular}{@{}llp{6.2cm}@{}}
+\toprule
+Tokens & Line & What the group is for \\
+\midrule
+\code{--s0} to \code{--s2}      & 6--8   & Surfaces, darkest to lightest. \code{s0} is the page, \code{s1} is a card, \code{s2} would be a detail inside a card \\
+\code{--ink1} to \code{--ink3}  & 9--11  & Text, brightest to dimmest: a heading, body text, a caption \\
+\code{--accent}, \code{--accentH}, \code{--accent2} & 12--14 & The orange, its hover variant, and the agency blue kept as a secondary \\
+\code{--green}                  & 15     & The one success colour \\
+\code{--border}, \code{--borderS} & 16--17 & A visible hairline, and a subtler one \\
+\code{--font-d}, \code{--font-b} & 18--19 & Display typeface and body typeface \\
+\code{--r}, \code{--rsm}, \code{--ease}, \code{--maxw}, \code{--shadow} & 20--24 & Corner radius, small radius, motion curve, content width, drop shadow \\
+\bottomrule
+\end{tabular}
+\caption{The token vocabulary, identical in naming to the sibling repository and
+different in almost every value.}
+\end{table}
+
+\begin{keyidea}{Why a numbered scale beats named colours}
+Calling a colour \code{--s1} instead of \code{--dark-navy} names what it is
+\emph{for} (the surface one step up from the page) rather than how it looks. This
+pair of repositories proves the point better than any argument could: the two files
+share every token \emph{name} and differ in nearly every token \emph{value}, so the
+same stylesheet vocabulary produced a blue agency site and an orange personal one
+with no renaming at all.
+\end{keyidea}
+
+Line 12 carries the rebrand, and it carries its own explanation in an inline
+comment: \code{orange, personal brand, distinct from agency blue}. Line 14 then
+keeps the agency blue as \code{--accent2}.
+
+\begin{honest}{Four tokens are defined and never read}
+\code{--s2} (line 8), \code{--accent2} (line 14), \code{--rsm} (line 21) and
+\code{--shadow} (line 24) are read zero times in this file. Counted mechanically:
+\code{grep -c 'var(--accent2)'} returns \code{0}, and likewise for the other three.
+
+\code{--accent2} is the most interesting of the four. It holds the agency blue,
+deliberately kept as a secondary colour, and is then never used as one. Meanwhile
+five other rules in this file hard-code that same blue as a literal rather than
+reading this token. The colour is used and the token for it is not, which is the
+worst of both worlds and is the subject of section 7.2's largest finding, below.
+\end{honest}
+
+Line 22 defines the motion curve. \code{cubic-bezier(.22,1,.36,1)} describes how an
+animation's speed varies across its run, by giving two control points of a curve.
+This one starts fast and settles gently, the shape usually described as ``ease
+out''. Every transition in the file refers to it, so all movement shares one
+personality.
+
+Line 23 sets the content width to 1240 pixels, 80 narrower than the sibling's 1320,
+which is the kind of small deliberate difference that shows these files were tuned
+separately rather than copied wholesale.
+
+\paragraph{Lines 26 to 43: the reset, and the one utility class.}
+
+\begin{lstlisting}[firstnumber=26,caption={\file{css/site.css}, lines 26--43}]
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: dark; scroll-behavior: smooth; }
+body {
+  font-family: var(--font-b);
+  background: var(--s0);
+  color: var(--ink1);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+img, video, svg { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; font-family: inherit; }
+
+/* ─── UTILITY ─── */
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+\end{lstlisting}
+
+Line 27 is a reset doing three jobs. The selector \code{*} means every element;
+\code{*::before} and \code{*::after} extend that to the two invisible
+pseudo-elements CSS lets you attach to anything.
+
+\code{box-sizing: border-box} is the most consequential declaration in the file. By
+default, an element given a width of 200 pixels and 20 pixels of padding occupies
+240: the padding is added outside the stated width. That default surprises
+everyone. \code{border-box} makes the stated width final, with padding eating into
+it. Every layout calculation here assumes it.
+
+\code{margin: 0; padding: 0} removes the browser's built-in spacing on headings and
+paragraphs, so all spacing in the design is deliberate rather than inherited from
+defaults that vary between browsers.
+
+Line 28 does two things to the document root. \code{color-scheme: dark} tells the
+browser this page is dark, so scrollbars, selection highlights and form controls
+are drawn in their dark variants rather than staying stubbornly white.
+\code{scroll-behavior: smooth} makes every jump-link glide rather than snap.
+
+\begin{honest}{Smooth scrolling is implemented twice}
+Line 28 already makes anchor links glide. \file{main.js} lines 55 to 62 then
+intercept every anchor link and call \code{scrollIntoView(\{behavior: 'smooth'\})}
+to do the same again. Either alone suffices. The JavaScript copy is the redundant
+one and it also carries a latent bug, described in section 7.3.
+\end{honest}
+
+Lines 29 to 37 set the page defaults: body typeface, darkest surface as background,
+brightest ink as text, and a line height of 1.5, meaning each line occupies one and
+a half times the font size. That last number is the most important typographic
+decision in the file and the one most often set badly.
+
+\code{-webkit-font-smoothing: antialiased} on line 33 thins text rendering on Mac
+displays. It is a Safari and Chrome specific property with no standard equivalent,
+and it is the conventional companion to light text on a dark background, which
+otherwise looks heavier than intended.
+
+\code{overflow-x: hidden} on line 35 forbids horizontal scrolling, and here it is
+load-bearing rather than cosmetic: the hero is a two-column grid whose left column
+is a full-height photo frame, and the floating badges are positioned by percentage
+inside it.
+
+Line 38 makes images, videos and SVGs never exceed their container and makes them
+block-level. That second part fixes a genuinely confusing default: images are
+inline by default, which reserves space beneath them for the descenders of text
+that is not there, producing a mysterious few pixels of gap under every image.
+
+Line 39 strips links of their blue colour and underline, making them inherit the
+surrounding colour. That is a design choice and an accessibility trade: colour
+alone now distinguishes a link from text, which fails the usual guidance. Every
+link here is either a button or a footer item, so the practical harm is small.
+
+Line 40 styles buttons, and is dead in the strict sense that this page contains no
+\code{<button>} element at all. It costs nothing and would come alive the moment one
+was added.
+
+Line 43 is the only utility class: a centred column no wider than 1240 pixels with
+28 pixels of breathing room each side. \code{margin: 0 auto} is the standard
+centring idiom, meaning no vertical margin and equal automatic margins left and
+right. Every section below the hero wraps its content in this; the hero
+deliberately does not, because it spans the full window.
+
+\paragraph{Lines 44 to 72: the button system, and the first missed rebrand.}
+
+\begin{lstlisting}[firstnumber=44,caption={\file{css/site.css}, lines 44--72}]
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  border-radius: 100px;
+  font-family: var(--font-d);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: transform 0.18s var(--ease), box-shadow 0.18s var(--ease),
+              background 0.18s var(--ease);
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--accentH);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(25,103,255,.4);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink2);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--s1); color: var(--ink1); }
+\end{lstlisting}
+
+This is the two-class pattern the HTML uses: \code{.btn} holds everything both
+buttons share and \code{.btn-primary} or \code{.btn-ghost} adds only what differs.
+Add a third style and you write four lines, not thirty.
+
+\code{display: inline-flex} on line 46 makes the button a flex container sitting in
+the flow of text rather than on its own line. That matters because the primary
+buttons contain both a word and an icon, and flex is what lines those up.
+
+\begin{jargon}{Flexbox}
+A layout system arranging an element's children in a row or a column and
+controlling how they align and share leftover space. Set \code{display: flex} on a
+parent and its children become flex items. \code{align-items: center} lines them up
+on their centres, which is how the icon in a button sits level with the text rather
+than on the baseline.
+\end{jargon}
+
+\code{gap: 8px} on line 48 puts eight pixels between word and icon without either
+needing a margin. Before \code{gap} existed this required fiddly rules targeting
+all-but-the-first child, and its arrival is one of the genuine improvements in
+modern CSS.
+
+\code{border-radius: 100px} on line 50 makes a pill. Any radius larger than half the
+element's height gives a perfect semicircular end, so 100 is simply comfortably
+larger than needed.
+
+Lines 55 and 56 declare the transition: three named properties, each over 0.18
+seconds, each using the shared curve. Listing properties explicitly rather than
+writing \code{transition: all} is better practice, because \code{all} makes the
+browser watch every property and can animate things you never intended.
+
+\begin{honest}{An orange button that casts a blue shadow}
+Line 65 sets the hover shadow to \code{rgba(25,103,255,.4)}. That is
+\code{\#1967ff}, the agency blue, at 40\% opacity. The button itself is orange
+(\code{--accent}, line 12).
+
+Orange and blue sit close to opposite each other on the colour wheel, so this does
+not read as a subtle mismatch; it reads as a mistake. It is the most visible of the
+five surviving blue literals catalogued below, and it is a one-line fix: the value
+should be \code{rgba(255,103,25,.4)}, or better still derived from the token.
+
+The cause is legible from the history. Commit \code{05210af} changed the tokens to
+orange; this line never used a token, so the change could not reach it.
+\end{honest}
+
+\begin{jargon}{rgba and opacity}
+\code{rgba(25,103,255,.4)} names a colour by red, green and blue amounts from 0 to
+255, plus an opacity from 0 (invisible) to 1 (solid). It is the same blue as
+\code{\#1967ff}, expressed in the form that allows transparency.
+\end{jargon}
+
+\begin{honest}{Neither button has a focus state}
+Neither \code{.btn-primary} nor \code{.btn-ghost} defines \code{:focus} or
+\code{:focus-visible}. A visitor navigating by keyboard rather than mouse gets
+whatever outline the browser draws by default, which on a dark background is often
+nearly invisible. Since these are the page's only interactive elements, this is the
+most consequential accessibility gap in the stylesheet, and it is three lines to
+fix.
+\end{honest}
+
+\paragraph{Lines 73 to 88: the two reveal mechanisms.}
+
+\begin{lstlisting}[firstnumber=73,caption={\file{css/site.css}, lines 73--88}]
+
+/* ─── REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+.stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.stagger.visible > * { opacity: 1; transform: none; }
+\end{lstlisting}
+
+These sixteen lines are the entire animation contract between the stylesheet and
+the JavaScript: the CSS defines both states and the transition between them, and
+the JavaScript's only job is to add the class \code{visible} at the right moment.
+
+\code{.reveal} starts invisible and 28 pixels low. \code{.reveal.visible}, which
+matches an element carrying \emph{both} classes, returns it to fully visible and
+its natural position. Because a transition is declared, the browser animates
+between the two over 0.7 seconds rather than snapping.
+
+The stagger is the same idea with one addition. \code{.stagger > *} means every
+direct child of a staggered container, and line 86 delays each child by
+\code{calc(var(--i, 0) * 90ms)}: the number the HTML wrote inline, multiplied by 90
+milliseconds. Child 0 starts immediately, child 5 starts 450 milliseconds later.
+
+\begin{jargon}{calc, and a custom property's fallback}
+\code{calc()} performs arithmetic in CSS and can mix units. \code{var(--i, 0)}
+reads the custom property \code{--i} and falls back to \code{0} if it was never
+set, which keeps this rule safe on any element whose inline \code{--i} was
+forgotten: it gets no delay instead of breaking.
+\end{jargon}
+
+\begin{keyidea}{Why the animation lives in CSS and the trigger lives in JavaScript}
+This split is why the page degrades well, and it is also its one real hazard. If
+JavaScript never runs, the class \code{visible} is never added and every revealed
+element stays at opacity zero, invisible forever. That would be catastrophic, and
+it is exactly why line 573 exists: the reduced-motion block at the end of the file
+forces \code{.reveal} and \code{.stagger > *} back to full opacity. That block is
+doing double duty as an accessibility feature and as a safety net.
+\end{keyidea}
+
+\paragraph{Lines 89 to 122: the navigation bar.}
+
+\begin{lstlisting}[firstnumber=89,caption={\file{css/site.css}, lines 89--122}]
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.nav.scrolled {
+  background: rgba(5,7,13,0.88);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 24px rgba(0,0,0,.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.nav-inner {
+  max-width: var(--maxw);
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-d);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink1);
+}
+\end{lstlisting}
+
+\code{position: fixed} on line 92 pins the bar to the window rather than the
+document, so it stays put while the page scrolls beneath it. Line 93 pins it to the
+top and stretches it across.
+
+\code{z-index: 100} on line 94 controls stacking order: when elements overlap, the
+higher number is drawn in front. 100 is arbitrary and generous, chosen so nothing
+else can accidentally cover the bar.
+
+Lines 101 to 107 are the scrolled state, the class \file{main.js} adds once the page
+has moved more than 40 pixels: a background at 88\% opacity, a bottom hairline, and
+a shadow.
+
+\code{backdrop-filter: blur(16px)} on line 105 is the interesting one: it blurs
+whatever is \emph{behind} the element, producing the frosted-glass effect that only
+works because the background is slightly transparent. Line 106 repeats it with a
+\code{-webkit-} prefix for Safari, which needed the prefixed form for years.
+
+\begin{honest}{A doubled flex layout}
+\code{.nav} sets \code{display: flex} with \code{justify-content: space-between}
+(lines 96 to 98), and \code{.nav-inner} sets the same three properties again (lines
+112 to 114). The outer one has a single child, so its \code{space-between} has
+nothing to space. It is harmless and redundant, and it makes the layout harder to
+reason about than it needs to be. The sibling repository has exactly the same
+doubling, so it came from the shared skeleton.
+\end{honest}
+
+Lines 116 to 122 style the logo. Note there is no rule for a logo mark or an
+accent-coloured fragment, unlike the sibling: this logo is one span of plain text,
+matching the simpler markup described in section 7.1.
+
+\paragraph{Lines 123 to 133: the hero as a two-column grid.}
+
+\begin{lstlisting}[firstnumber=123,caption={\file{css/site.css}, lines 123--133}]
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0;
+  padding-top: 80px;
+  overflow: hidden;
+}
+\end{lstlisting}
+
+This is where the two siblings genuinely diverge. The other repository's hero is a
+single centred column over a field of drifting cards; this one is a two-column
+grid, photograph on the left and words on the right.
+
+\begin{jargon}{CSS Grid}
+A layout system for two dimensions, as opposed to flexbox's one.
+\code{grid-template-columns: 1fr 1fr} means two columns each taking one equal
+share of the space. \code{1fr} is a fraction of what remains after any fixed sizes
+are accounted for.
+\end{jargon}
+
+\code{min-height: 100vh} on line 126 makes the hero at least as tall as the window.
+\code{vh} means one percent of the viewport height. \code{padding-top: 80px} on
+line 131 leaves room for the fixed navigation bar, which is removed from the normal
+flow and would otherwise sit on top of the content.
+
+\paragraph{Lines 134 to 148: the photo column.}
+
+\begin{lstlisting}[firstnumber=134,caption={\file{css/site.css}, lines 134--148}]
+
+/* photo side */
+.hero-photo-side {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-photo-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+\end{lstlisting}
+
+\code{position: relative} on line 137 looks like it does nothing and is essential.
+It establishes this element as the reference point for any absolutely positioned
+descendant, which here means the three floating badges. Without it they would
+position themselves against the whole window instead of against the photo column.
+
+\begin{jargon}{Positioning: relative and absolute}
+\code{position: absolute} takes an element out of the normal flow and places it at
+coordinates you give, measured from the nearest ancestor that is itself positioned,
+which in practice means the nearest one with \code{position: relative}. This
+pairing, a relative parent and absolute children, is the standard way to place
+things inside a box.
+\end{jargon}
+
+Line 138 sets the column's height to \code{100vh}, the full window height, which is
+what makes the photograph bleed to the top and bottom edges of the screen.
+
+\paragraph{Lines 149 to 179: the placeholder, styled with real care.}
+
+\begin{lstlisting}[firstnumber=149,caption={\file{css/site.css}, lines 149--179}]
+
+/* Photo placeholder - replace with <img src="assets/salman.jpg"> */
+.hero-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #1a0800 0%, #4a1800 40%, #05070d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  color: rgba(255,255,255,.15);
+  font-family: var(--font-d);
+}
+.hero-photo-placeholder .placeholder-initial {
+  font-size: 120px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  background: linear-gradient(135deg, rgba(255,103,25,.6), rgba(255,140,74,.3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-photo-placeholder .placeholder-note {
+  font-size: 13px;
+  color: rgba(255,255,255,.25);
+  text-align: center;
+  max-width: 220px;
+  line-height: 1.5;
+}
+\end{lstlisting}
+
+These thirty lines style the placeholder that section 7.1 identified as the most
+consequential thing in the repository, and they are worth reading for what they say
+about intent.
+
+Line 154 fills the frame with a three-stop gradient running from a near-black
+brown, through a deep orange, to the page background. That is a considered stand-in
+for a photograph: it establishes the brand colour and fades into the page rather
+than ending at a hard edge.
+
+Lines 163 to 172 style the giant letter, and they use a genuinely advanced
+technique.
+
+\begin{keyidea}{How the letter is filled with a gradient}
+You cannot pour a gradient into text directly. The trick on lines 168 to 171 is
+three steps: give the element a gradient background, tell the browser to clip that
+background to the shape of the text (\code{background-clip: text}), and then make
+the text itself transparent (\code{-webkit-text-fill-color: transparent}) so the
+clipped background shows through the letterforms.
+
+Line 171 sets the standard \code{background-clip: text} and line 169 the prefixed
+\code{-webkit-} form, which is still needed for full support. Note the third line
+has no unprefixed equivalent at all: \code{-webkit-text-fill-color} is a
+non-standard property that every major browser implements, and this effect depends
+on it.
+\end{keyidea}
+
+Lines 173 to 179 style the instruction text: 13 pixels, white at 25\% opacity,
+centred, capped at 220 pixels wide.
+
+\begin{honest}{The placeholder note is deliberately styled to be readable}
+This is the detail that settles how to describe the placeholder. The note is not
+raw unstyled debris: it has been given a size, a colour, an alignment, a maximum
+width and a line height. Somebody laid it out to be read.
+
+Read charitably, that is a designer making an unfinished state look tidy in a
+review. Read plainly, it means a visitor to the published page would see a legible
+instruction addressed to a developer. Both readings are consistent with the
+evidence and the second is what a visitor experiences, which is why section 14
+treats it as the project's defining unfinished element.
+\end{honest}
+
+\paragraph{Lines 180 to 200: the two edge fades.}
+
+\begin{lstlisting}[firstnumber=180,caption={\file{css/site.css}, lines 180--200}]
+
+/* fade gradient on the right edge so text side blends */
+.hero-photo-frame::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, var(--s0));
+  pointer-events: none;
+}
+/* fade at bottom */
+.hero-photo-frame::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 30%;
+  background: linear-gradient(to top, var(--s0), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+\end{lstlisting}
+
+Two pseudo-elements, and they solve the problem a hard-edged half-page image
+creates.
+
+\begin{jargon}{Pseudo-element}
+An extra box CSS creates inside an element with no corresponding tag in the HTML,
+written \code{::before} or \code{::after}. It needs the \code{content} property to
+exist at all, which is why lines 183 and 193 set \code{content: ''}: an empty
+string is enough to bring it into being. It is the standard way to draw a
+decorative shape without polluting the markup.
+\end{jargon}
+
+The \code{::after} (lines 182 to 190) covers the rightmost 40\% of the photo column
+with a gradient running from transparent to the page background, so the photograph
+dissolves into the text column instead of ending at a visible seam. The
+\code{::before} (lines 192 to 200) does the same across the bottom 30\%.
+
+Both carry \code{pointer-events: none}, which makes them transparent to the mouse
+so clicks pass through. Without it these two invisible layers would sit over the
+photo column and swallow any interaction beneath them.
+
+\begin{keyidea}{Why the bottom fade needs a z-index and the right fade does not}
+Line 199 gives the \code{::before} a \code{z-index: 1}. The reason is ordering:
+without an explicit stacking position, a \code{::before} is painted \emph{behind}
+its element's content, while an \code{::after} is painted in front. So the right
+fade works by default and the bottom fade would be hidden behind the placeholder
+until lifted.
+
+The badges then sit at \code{z-index: 2} (line 214), one layer above the bottom
+fade, which is what keeps them crisp while the photograph dims underneath. Three
+elements, three deliberate layers.
+\end{keyidea}
+
+\paragraph{Lines 201 to 241: the floating badges.}
+
+\begin{lstlisting}[firstnumber=201,caption={\file{css/site.css}, lines 201--241}]
+
+/* floating badges on the photo */
+.hero-float-badge {
+  position: absolute;
+  background: rgba(13,18,32,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+  animation: badgeFloat 6s ease-in-out infinite;
+}
+.hero-float-badge:nth-child(2) { bottom: 25%; left: 8%;  animation-delay: 0s;   animation-duration: 7s; }
+.hero-float-badge:nth-child(3) { bottom: 40%; right: 12%; animation-delay: 2s;  animation-duration: 6s; }
+.hero-float-badge:nth-child(4) { top: 22%;   left: 10%;  animation-delay: 1s;  animation-duration: 8s; }
+
+@keyframes badgeFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.badge-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.badge-icon-blue   { background: rgba(25,103,255,.15); }
+.badge-icon-orange { background: rgba(255,103,25,.15); }
+.badge-icon-green  { background: rgba(52,211,153,.12); }
+.badge-icon svg { width: 18px; height: 18px; }
+.badge-text-main {
+  font-family: var(--font-d);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink1);
+  white-space: nowrap;
+}
+.badge-text-sub { font-size: 11px; color: var(--ink3); white-space: nowrap; }
+\end{lstlisting}
+
+Lines 203 to 216 define a badge: absolutely positioned, dark and semi-transparent
+with a 12-pixel blur behind it, bordered, rounded, laid out as a row with a gap,
+lifted to \code{z-index: 2}, and animated forever.
+
+Note line 205: \code{rgba(13,18,32,0.85)}.
+
+\begin{honest}{A colour left behind by the rebrand, in a subtler way}
+\code{rgb(13,18,32)} is \code{\#0d1220}, which is the \emph{sibling repository's}
+\code{--s1} surface colour. This file's own \code{--s1} is \code{\#0e1118}, a
+slightly different, less blue dark. So the badge background is the other project's
+card colour, written as a literal, at 85\% opacity.
+
+Nobody would notice: the two values differ by a few points of blue and the badge
+sits over a gradient at 85\% opacity. It is included here because it is evidence
+about how the rebrand was done, not because it is a visible defect. The tokens were
+updated and every literal in the file was left exactly as inherited.
+\end{honest}
+
+Lines 217 to 219 place the three badges individually, and this is where the HTML's
+child order becomes load-bearing. \code{:nth-child(2)} matches the second child of
+its parent, so these three rules assume the placeholder occupies child 1, as section
+7.1 explained. Each badge gets a different corner, a different animation delay and a
+different duration (7, 6 and 8 seconds), which is what stops the three drifting in
+visible unison.
+
+Lines 221 to 224 define the drift itself: a gentle rise of 8 pixels at the halfway
+point and back. Grouping \code{0\%, 100\%} on one line is the idiom for an
+animation returning to where it started.
+
+\begin{jargon}{Keyframes}
+An animation defined by describing the element at particular points through its
+run, given as percentages of the total duration. The browser fills in every moment
+between. \code{0\%} is the start and \code{100\%} the end.
+\end{jargon}
+
+Lines 230 to 232 are the three tinted icon chips: blue, orange and green, each the
+matching colour at 12 to 15\% opacity. As section 7.1 noted, these three are the one
+place blue is plainly intentional.
+
+Line 239 and line 241 both set \code{white-space: nowrap}, stopping ``1.6M+ views''
+and ``organic, for clients'' wrapping onto two lines and making the badge grow
+taller than its neighbours.
+
+\paragraph{Lines 242 to 301: the content column.}
+
+\begin{lstlisting}[firstnumber=242,caption={\file{css/site.css}, lines 242--301}]
+
+/* content side */
+.hero-content-side {
+  padding: 0 48px 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(25,103,255,.1);
+  border: 1px solid rgba(25,103,255,.25);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accentH);
+  width: fit-content;
+}
+.hero-h1 {
+  font-family: var(--font-d);
+  font-size: clamp(40px, 5vw, 70px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  color: var(--ink1);
+}
+.hero-h1 em { font-style: normal; color: var(--accent); }
+.hero-descriptor {
+  font-family: var(--font-d);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink3);
+  letter-spacing: -0.01em;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hero-mini-stats {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding-top: 4px;
+  border-top: 1px solid var(--borderS);
+}
+.hero-mini-stat { text-align: left; }
+.hero-mini-num {
+  font-family: var(--font-d);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink1);
+  letter-spacing: -0.03em;
+}
+.hero-mini-lbl { font-size: 12px; color: var(--ink3); }
+\end{lstlisting}
+
+Line 244 lays the right column out as a vertical flex column with a 32-pixel gap,
+so its five children space themselves without margins. The asymmetric padding
+(\code{0 48px 0 20px}) pulls the text slightly left, toward the fading edge of the
+photograph.
+
+Lines 251 to 263 are the small pill above the name, and it contains the second
+missed rebrand.
+
+\begin{honest}{A blue pill containing orange text}
+Lines 255 and 256 tint the pill with \code{rgba(25,103,255,...)}, the agency blue,
+while line 261 colours its text \code{var(--accentH)}, which is the orange
+\code{\#ff8c4a}.
+
+So the element reads its foreground from a token and its background from a
+literal, and after the rebrand the two no longer agree. On screen it is a
+blue-tinted capsule with orange text inside it, which looks like neither brand.
+
+\code{width: fit-content} on line 262 is worth noting separately and is correct: in
+a flex column, a child stretches to full width by default, so without this the pill
+would span the entire column instead of hugging its text.
+\end{honest}
+
+Line 266 is the most useful single line in the file to learn from.
+
+\begin{jargon}{clamp}
+\code{clamp(minimum, preferred, maximum)} takes the preferred value but never lets
+it fall below the minimum or rise above the maximum. Here the preferred value is
+\code{5vw}, 5\% of the window width, so the headline scales continuously between a
+floor of 40 pixels and a ceiling of 70. One line replaces what used to need several
+media queries.
+\end{jargon}
+
+Line 268 sets \code{letter-spacing: -0.03em}, pulling letters closer together. Large
+display type looks loose at its default spacing, and negative tracking at large
+sizes is standard practice. The unit \code{em} means ``relative to this element's
+font size'', so the tightening scales with the text.
+
+Line 272 is the rule flagged in section 7.1: it takes the \code{<em>} tag, removes
+the italics it normally implies, and colours it with the accent instead.
+
+Lines 286 to 301 build the three small statistics: a flex row with a 28-pixel gap
+above a hairline, each statistic a 24-pixel number over a 12-pixel label.
+
+\paragraph{Lines 302 to 321: the work section, and the shared headings.}
+
+\begin{lstlisting}[firstnumber=302,caption={\file{css/site.css}, lines 302--321}]
+
+/* ─── WORK GRID ─── */
+.work-section { padding: 120px 0 80px; }
+.section-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font-d);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  color: var(--ink1);
+  margin-bottom: 52px;
+}
+\end{lstlisting}
+
+Although they sit under the work banner, \code{.section-kicker} and
+\code{.section-title} are used by three sections. Their placement here is a small
+organisational untidiness: a reader looking for the heading styles would reasonably
+expect them near the top with the other shared pieces.
+
+The kicker is the small uppercase line (``The work'', ``Case studies'') and the
+title is the large heading beneath it. Note the tracking is positive on the kicker
+and negative on the title. That is not an inconsistency but a rule of typography:
+large text needs tightening and small uppercase text needs opening up or it becomes
+a smudge.
+
+\begin{honest}{The kicker's contrast is worth measuring}
+\code{--accent} is now \code{\#ff6719}, a saturated orange, set at 12 pixels
+uppercase on a near-black background. Small text needs more contrast than large
+text, not less. This document does not have a measured contrast ratio for that
+exact pairing and so does not assert a failure, but it is the first thing to check
+in an accessibility audit. Orange on near-black generally fares better than the
+sibling's blue on near-black, so this is the less likely of the two to fail.
+\end{honest}
+
+\paragraph{Lines 322 to 388: the project cards.}
+
+\begin{lstlisting}[firstnumber=322,caption={\file{css/site.css}, lines 322--388}]
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.work-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: transform 0.22s var(--ease), border-color 0.22s, box-shadow 0.22s;
+}
+.work-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(25,103,255,.35);
+  box-shadow: 0 16px 48px rgba(0,0,0,.4);
+}
+.work-thumb {
+  aspect-ratio: 16/9;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.work-thumb-overlay {
+  position: absolute; inset: 0;
+  background: rgba(5,7,13,.2);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+.work-card:hover .work-thumb-overlay { opacity: 1; }
+.work-play {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid rgba(255,255,255,.3);
+}
+.work-play svg { width: 20px; height: 20px; color: #fff; margin-left: 2px; }
+.work-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(5,7,13,.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight: 600;
+  color: var(--green);
+}
+.wt1 { background: linear-gradient(135deg,#2a1000,#5a2800); }
+.wt2 { background: linear-gradient(135deg,#2a1800,#5a3000); }
+.wt3 { background: linear-gradient(135deg,#1a0a00,#3a1800); }
+.wt4 { background: linear-gradient(135deg,#300800,#602000); }
+.wt5 { background: linear-gradient(135deg,#200e00,#482800); }
+.wt6 { background: linear-gradient(135deg,#281400,#503000); }
+.work-info { padding: 16px; }
+.work-client {
+  font-size: 11px; color: var(--ink3); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;
+}
+.work-title {
+  font-family: var(--font-d);
+  font-size: 15px; font-weight: 600;
+  color: var(--ink1); letter-spacing: -0.01em;
+}
+\end{lstlisting}
+
+\code{overflow: hidden} on line 332 is what makes the rounded corners work: without
+it the gradient thumbnail inside would square off the top two corners it is
+supposed to follow.
+
+\code{aspect-ratio: 16/9} on line 341 reserves a widescreen-shaped area regardless
+of width. This is worth appreciating: the layout will not shift when a real image
+eventually loads, because the space is already the right shape. It is the modern
+replacement for a well-known hack involving percentage padding.
+
+The overlay (lines 346 to 353) sits over the whole thumbnail at zero opacity and
+fades to one on hover, revealing the play button beneath a 20\% black wash. The play
+button (lines 354 to 361) is a frosted circle: white at 15\% opacity with an
+8-pixel backdrop blur and a brighter rim.
+
+Line 362 gives the play triangle \code{margin-left: 2px}. That is not an accident.
+A triangle's visual centre of mass sits left of its geometric centre, so a
+perfectly centred play icon looks slightly left. Nudging it two pixels right is a
+standard correction, and noticing it is a good sign that whoever built this cared
+about detail.
+
+\begin{honest}{The third missed rebrand}
+Line 337 sets the hover border to \code{rgba(25,103,255,.35)}, the agency blue, on
+a card in an orange-branded site. Same cause, same one-line fix as line 65.
+\end{honest}
+
+Lines 373 to 378 are the six placeholder gradients, and they \emph{were} rebranded:
+every one is a two-stop orange or brown blend, where the sibling's equivalents run
+through blue, teal, violet and green. So the rebrand did reach these six literals
+and missed five others, which tells you it was done by eye rather than by search.
+
+Lines 380 to 388 style the two lines of text under each thumbnail: a small uppercase
+client name in the dimmest ink, and the result in the display typeface at 15
+pixels. This is the only place in the file where the display typeface does ordinary
+work at a small size.
+
+\paragraph{Lines 389 to 419: the metrics band.}
+
+\begin{lstlisting}[firstnumber=389,caption={\file{css/site.css}, lines 389--419}]
+
+/* ─── METRICS ─── */
+.metrics-section {
+  padding: 80px 0;
+  border-top: 1px solid var(--borderS);
+  border-bottom: 1px solid var(--borderS);
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.metric-item {
+  padding: 36px 24px;
+  text-align: center;
+  border-right: 1px solid var(--borderS);
+}
+.metric-item:last-child { border-right: none; }
+.metric-num {
+  font-family: var(--font-d);
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink1);
+  margin-bottom: 8px;
+}
+.metric-label {
+  font-size: 13px; color: var(--ink3); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+\end{lstlisting}
+
+Four equal columns with a 2-pixel gap, and the separators drawn as a right border
+on every item (line 404) with the last one removed (line 406).
+
+Note that this is the only place in the file that draws dividing lines this way.
+The sibling repository contains a second, cleverer technique for the same job (a
+grid whose gaps show a coloured layer beneath), used there on its services grid. That
+technique does not appear here, because this file has no equivalent grid, so the
+inconsistency the sibling has within itself does not exist in this one.
+
+Lines 407 to 415 style the big numbers: display typeface, scaling between 34 and 56
+pixels, with \code{line-height: 1}. That last is deliberate. The page-wide default
+of 1.5 is right for paragraphs and wrong for a large number, where it leaves a
+visible gap above and below.
+
+\paragraph{Lines 420 to 479: the case-study cards, and three dead rules.}
+
+\begin{lstlisting}[firstnumber=420,caption={\file{css/site.css}, lines 420--479}]
+
+/* ─── CASE STUDIES ─── */
+.cases-section { padding: 100px 0; }
+.case-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 48px;
+  margin-bottom: 16px;
+  transition: border-color 0.22s;
+}
+.case-card:hover { border-color: rgba(25,103,255,.3); }
+.case-card.reverse { direction: rtl; }
+.case-card.reverse > * { direction: ltr; }
+.case-visual {
+  border-radius: var(--r);
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  position: relative;
+}
+.cv1 { background: linear-gradient(135deg,#2a1000,#5a2800); }
+.cv2 { background: linear-gradient(135deg,#300800,#602000); }
+.case-visual-inner {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(5,7,13,.8) 0%, transparent 60%);
+}
+.case-visual-metrics {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.cvm {
+  background: rgba(5,7,13,.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 12px;
+  display: flex; flex-direction: column; gap: 1px;
+}
+.cvm-num {
+  font-family: var(--font-d);
+  font-size: 16px; font-weight: 700;
+  color: var(--ink1); letter-spacing: -0.02em;
+}
+.cvm-lbl { font-size: 10px; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.06em; }
+.case-content { display: flex; flex-direction: column; gap: 20px; }
+.case-client-name {
+  font-size: 12px; font-weight: 700;
+  color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em;
+}
+.case-title {
+  font-family: var(--font-d);
+  font-size: clamp(20px, 2.5vw, 30px);
+  font-weight: 700; letter-spacing: -0.02em;
+  color: var(--ink1); line-height: 1.2;
+}
+\end{lstlisting}
+
+Each case card is a two-column grid with a 48-pixel gap: a visual panel and a block
+of text, vertically centred against each other.
+
+Lines 436 and 437 are the dead rules identified in section 7.1.
+
+\begin{honest}{Three rules that have never applied, and the mechanism they were
+replaced by}
+\code{.case-card.reverse} means ``an element carrying both the class
+\code{case-card} and the class \code{reverse}''. The HTML at line 321 writes
+\code{class="case-card case-card-reverse reveal"}. A hyphen does not create a second
+class, so this selector matches nothing, and neither does its partner on line 437 or
+the third instance in the responsive block at line 559.
+
+What they were trying to do is elegant and worth understanding even though it is
+dead. Setting \code{direction: rtl} on a grid container reverses the order its
+children are placed in, and setting \code{direction: ltr} on the children puts their
+text back the right way round. Two lines, and a two-column layout mirrors itself.
+
+What actually happens instead is that \file{index.html} sets \code{order:2} and
+\code{order:1} inline on the two children, which achieves the same result by a
+different route. So the design is correct, three rules are dead, and nothing
+reported it. This is the clearest illustration in either sibling of what ``silent
+failure'' means: an entire mechanism can be broken while the page looks right,
+because a second mechanism quietly does the same job.
+\end{honest}
+
+\begin{honest}{The fourth missed rebrand}
+Line 435 sets the case card's hover border to \code{rgba(25,103,255,.3)}, the agency
+blue again.
+\end{honest}
+
+Lines 446 to 451 lay the metric chips over the bottom of each visual, with a
+gradient from 80\% opaque page colour at the bottom to transparent at 60\% height, so
+the chips sit on a dark base and the top of the visual stays clear. Lines 455 to 468
+style the chips themselves: frosted, rounded, a number over a tiny uppercase label.
+
+\paragraph{Lines 480 to 524: the booking panel.}
+
+\begin{lstlisting}[firstnumber=480,caption={\file{css/site.css}, lines 480--524}]
+
+/* ─── BOOK A CALL ─── */
+.book-section { padding: 80px 0 140px; }
+.book-wrap {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 72px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.book-wrap::before {
+  content: '';
+  position: absolute;
+  top: -100px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(25,103,255,.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.book-eyebrow {
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 16px;
+}
+.book-title {
+  font-family: var(--font-d);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700; letter-spacing: -0.025em;
+  color: var(--ink1); margin-bottom: 12px;
+}
+.book-sub {
+  font-size: 16px; color: var(--ink3); margin-bottom: 36px;
+}
+.book-cta-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; flex-wrap: wrap;
+}
+.book-detail {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; font-size: 13px; color: var(--ink3); margin-top: 20px;
+}
+.book-detail svg { width: 15px; height: 15px; }
+.book-detail span { color: var(--ink2); }
+\end{lstlisting}
+
+Lines 492 to 500 add a glow above the panel using a \code{::before}: a 600 by 300
+ellipse positioned 100 pixels above the panel's top edge and centred with the
+standard \code{left: 50\%} plus \code{translateX(-50\%)} idiom. Because the panel has
+\code{overflow: hidden}, only the lower part of the glow is visible, which makes it
+read as light spilling in from above rather than as a floating oval.
+
+\code{pointer-events: none} on line 499 appears for the third time in the file, for
+the same reason as before: a decorative layer must not intercept the click aimed at
+the booking button.
+
+\begin{honest}{The fifth and last missed rebrand}
+Line 498 makes that glow \code{rgba(25,103,255,.1)}, the agency blue, on the most
+important element of the page. It is subtle at 10\% opacity, and it means the halo
+around the call to action is the wrong brand colour.
+
+That completes the catalogue: lines 65, 255, 256, 337, 435 and 498, five rules and
+six declarations, all inherited from the sibling and all missed by a rebrand that
+correctly updated the tokens and the six thumbnail gradients.
+\end{honest}
+
+\paragraph{Lines 525 to 535: the footer.}
+
+\begin{lstlisting}[firstnumber=525,caption={\file{css/site.css}, lines 525--535}]
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--borderS);
+  padding: 32px 28px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink3);
+}
+footer a { color: var(--ink3); transition: color 0.15s; }
+footer a:hover { color: var(--ink1); }
+\end{lstlisting}
+
+Deliberately unremarkable: one hairline, centred dim text, and links that brighten
+on hover over 0.15 seconds.
+
+\paragraph{Lines 536 to 575: the responsive rules and the accessibility block.}
+
+\begin{lstlisting}[firstnumber=536,caption={\file{css/site.css}, lines 536--575}]
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: 80px;
+  }
+  .hero-photo-side {
+    height: 55vw;
+    min-height: 280px;
+  }
+  .hero-content-side {
+    padding: 40px 28px 60px;
+  }
+  .hero-mini-stats { gap: 20px; }
+  .work-grid   { grid-template-columns: repeat(2, 1fr); }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .metric-item { border-right: none; border-bottom: 1px solid var(--borderS); }
+  .metric-item:nth-child(odd) { border-right: 1px solid var(--borderS); }
+  .metric-item:nth-child(3),
+  .metric-item:nth-child(4)   { border-bottom: none; }
+  .case-card { grid-template-columns: 1fr; gap: 28px; padding: 32px; }
+  .case-card.reverse { direction: ltr; }
+}
+
+@media (max-width: 600px) {
+  .work-grid  { grid-template-columns: 1fr; }
+  .book-wrap  { padding: 48px 24px; }
+  .hero-float-badge:nth-child(4) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+  .reveal, .stagger > * { opacity: 1; transform: none; }
+  .hero-float-badge { animation: none; }
+}
+\end{lstlisting}
+
+\begin{jargon}{Media query}
+A block of CSS applying only when a condition about the display is true.
+\code{@media (max-width: 960px)} means ``apply everything here only when the window
+is 960 pixels wide or narrower''. Because it comes later in the file, its rules
+override the equivalents above.
+\end{jargon}
+
+The 960-pixel block does the real work of making this design usable on a phone. The
+hero collapses from two columns to one (line 540) and stops demanding the full
+window height (line 541). The photo column becomes \code{55vw} tall with a
+280-pixel floor (lines 545 and 546), so the photograph stays a sensible shape
+instead of filling a tall narrow screen.
+
+Lines 553 to 557 fold the metrics band from four columns to two and rebuild its
+dividing lines: right border removed from everything, bottom border added to
+everything, right border restored on odd items so there is still a line down the
+middle, bottom border removed from items 3 and 4 so the block does not end in a
+stray line. That is four rules to reposition two lines, and it is the price of the
+border technique.
+
+Line 558 collapses the case cards to a single column, and line 559 is the third dead
+rule.
+
+The 600-pixel block collapses the work grid to one column, tightens the booking
+panel, and hides the third floating badge, which is the one positioned at the top
+of the photo column where a phone has least room.
+
+The final block, lines 568 to 575, is the best thing in the file.
+
+\begin{keyidea}{What \code{prefers-reduced-motion} is, and why this block is better
+than its sibling's}
+Operating systems let people ask for reduced motion, usually because animation
+causes nausea, dizziness or migraine. The browser passes that preference to the
+page and this block responds.
+
+It does three things. It crushes every animation and transition to a thousandth of
+a millisecond, effectively instant rather than disabled, a deliberate choice because
+setting them to zero can stop some browsers firing the events that mark an animation
+as finished. Line 573 then forces every revealed and staggered element to full
+opacity, because those start invisible and would otherwise never appear once their
+transitions were neutered. That second line is the detail most implementations get
+wrong.
+
+Line 574 is the addition this file makes and the sibling does not:
+\code{.hero-float-badge \{ animation: none; \}} stops the three badges drifting
+outright. The blanket duration rule above would already have all but stopped them,
+so this is belt and braces on the one continuous, looping animation on the page,
+which is exactly the kind a motion-sensitive visitor would notice most.
+\end{keyidea}
+
+\begin{honest}{The reduced-motion block cannot reach the counting numbers}
+This block governs CSS only. The four metric numbers are animated by JavaScript,
+counting up over 2.2 seconds, and \file{main.js} never checks this preference. A
+visitor who has asked for reduced motion still gets four numbers whirring upward.
+
+The fix is four lines in \file{main.js}, given in section 7.3. This is the clearest
+defect in the project after the placeholder: not because it is severe, but because
+the intent to handle it correctly is demonstrably here, and expressed more carefully
+than in the sibling, and still was not carried across to the other file.
+\end{honest}
+
+\subsubsection*{What it connects to}
+
+\textbf{Named by:} \file{new-design-reference/index.html}, line 16, and nothing
+else.
+
+\textbf{Names:} no other file. It refers to no images and imports nothing. It names
+font \emph{families}, which the HTML is responsible for downloading.
+
+\textbf{Coupled to \file{index.html}} in three ways that no tool checks: by class
+name throughout, by child position for the floating badges (lines 217 to 219), and
+by the shared contract that JavaScript adds the class \code{visible}. One of those
+couplings is already broken, at lines 436, 437 and 559.
+
+\textbf{Coupled to \file{js/main.js}} through exactly two class names,
+\code{scrolled} and \code{visible}, both of which the JavaScript adds and this file
+defines.
+
+\subsubsection*{Concepts introduced}
+
+Custom properties, the cascade, flexbox, grid, pseudo-elements, pseudo-classes,
+keyframe animations, transitions, media queries, \code{clamp}, \code{calc},
+\code{aspect-ratio}, \code{backdrop-filter}, \code{background-clip: text}, stacking
+with \code{z-index}, and \code{prefers-reduced-motion}. Each is defined at first use
+above and collected in the glossary.
+
+\subsubsection*{How it breaks}
+
+\begin{itemize}
+\item \textbf{Delete this file and the page still works}, in the sense that every
+  word remains readable. It looks like an unstyled document, and the two-column
+  hero becomes a stack.
+\item \textbf{Rename a class here without renaming it in the HTML} and that element
+  silently loses its styling. Lines 436, 437 and 559 are a live example.
+\item \textbf{Insert an element before the placeholder in the HTML} and all three
+  badges jump, because lines 217 to 219 position them by child number.
+\item \textbf{Remove \code{pointer-events: none} from either fade} (lines 189, 198)
+  and those invisible layers begin swallowing clicks.
+\item \textbf{Remove \code{position: relative} on line 137} and the badges jump to
+  positions measured against the whole window.
+\item \textbf{A missing semicolon} makes the browser discard the rest of that
+  declaration block. Unlike a program, CSS never reports an error: it drops what it
+  cannot parse and carries on, which is why a stylesheet bug shows up as something
+  looking wrong rather than as a message.
+\end{itemize}
+
+\subsubsection*{Honest findings for this file}
+
+Five rules still using the agency blue after the rebrand (lines 65, 255, 256, 337,
+435, 498); a sixth inherited literal in the badge background (line 205); four
+tokens defined and never read; three dead rules for a class the HTML does not use
+(lines 436, 437, 559); a doubled flex layout in the navigation; smooth scrolling
+implemented twice; no focus states on either button; and a reduced-motion block
+that is the best in either sibling and cannot reach the one animation living
+outside CSS.

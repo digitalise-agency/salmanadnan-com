@@ -1,0 +1,184 @@
+% ===========================================================================
+\subsection{\file{new-design-reference/assets/ASSETS.md}}
+% ===========================================================================
+
+\textbf{Markdown, 32 lines.} A checklist of the eleven files somebody would need to
+produce before this design could be considered finished, plus three notes about
+placeholder content to replace.
+
+\begin{provenance}{new-design-reference/assets/ASSETS.md}
+Hand-written, added in the first commit \code{1f7ed12} alongside the design it
+describes, and never edited. Written by the same person in the same sitting as the
+HTML, which is evident from its references to the exact class names used there
+(\code{.hero-photo-placeholder}, \code{wt1} through \code{wt6}, \code{cv1},
+\code{cv2}) and from the fact that line 9 quotes, character for character, the
+\code{<img>} tag already written into the HTML's banner comment at line 34.
+\textbf{Confidence: high, from the commit history and the internal references.}
+\end{provenance}
+
+\subsubsection*{Why it exists}
+
+It is a handover note. The design was built with placeholder visuals, and this file
+records precisely what would replace each one and what HTML change each replacement
+needs. As an artefact it is genuinely good practice: it converts ``this is not
+finished'' from a feeling into a list.
+
+It is also the document that makes the state of this project unambiguous. The
+placeholder in the hero could be argued to be a design choice; a checklist listing
+the photograph as \emph{required before launch} cannot.
+
+\begin{jargon}{Markdown}
+A way of writing formatted text in a plain file, using punctuation instead of menus:
+\code{\#} starts a heading, backticks mark code, and pipe characters draw a table. It
+is designed to be readable as plain text and is the standard format for notes kept
+alongside code.
+\end{jargon}
+
+\subsubsection*{Line by line}
+
+\begin{lstlisting}[firstnumber=1,caption={\file{ASSETS.md}, lines 1--19}]
+# Assets checklist: salmanadnan.com
+
+Drop real assets here, then update the HTML as noted.
+
+## Required before launch
+
+| File | Size | Where used | HTML change needed |
+|---|---|---|---|
+| `salman.jpg` | 1200px tall min, 2:3 ratio | Hero photo left side | Replace `.hero-photo-placeholder` div with `<img src="/assets/salman.jpg" alt="Salman Adnan" style="width:100%;height:100%;object-fit:cover;object-position:top;">` |
+| `thumbs/work-1.jpg` | 800x450px | Work grid card 1 | Add `style="background-image:url('/assets/thumbs/work-1.jpg')"` to `.wt1` |
+| `thumbs/work-2.jpg` | 800x450px | Work grid card 2 | Same pattern for `.wt2` through `.wt6` |
+| `thumbs/work-3.jpg` | 800x450px | Work grid card 3 | |
+| `thumbs/work-4.jpg` | 800x450px | Work grid card 4 | |
+| `thumbs/work-5.jpg` | 800x450px | Work grid card 5 | |
+| `thumbs/work-6.jpg` | 800x450px | Work grid card 6 | |
+| `case-1.jpg` | 1200x750px | Case study 1 visual | Add `background-image` to `.cv1` |
+| `case-2.jpg` | 1200x750px | Case study 2 visual | Add `background-image` to `.cv2` |
+| `favicon.svg` | 32x32 | Browser tab | Add `<link rel="icon" href="/assets/favicon.svg">` in `<head>` |
+| `og-image.png` | 1200x630px | Social share | Update `og:image` meta tag |
+\end{lstlisting}
+
+Line 1 is the title and line 3 the instruction: put the real files in this folder,
+then change the HTML as the table says.
+
+Lines 7 and 8 open a table, line 8 being the separator row Markdown requires between
+a table's headings and its body.
+
+The eleven rows are the substance, and reading them tells you exactly what the
+design is pretending to have.
+
+\textbf{The photograph} is first, and it is the one that matters. Line 9 specifies
+it precisely: at least 1200 pixels tall, in a 2:3 portrait ratio, and it gives the
+complete replacement tag including \code{object-fit: cover} so the image fills the
+frame without distorting, and \code{object-position: top} so a face stays in shot
+when the frame crops. Whoever wrote this knew exactly what was needed and did not
+have the file.
+
+\textbf{Six project thumbnails} at 800 by 450, which is exactly the 16 by 9 shape the
+stylesheet reserves with \code{aspect-ratio} at line 341. Line 11 gives the pattern
+for the remaining five rather than repeating it, which is why rows 12 to 15 have an
+empty final column.
+
+\textbf{Two case-study images} at 1200 by 750, matching the \code{16/10} aspect ratio
+set at \file{site.css} line 441. That the two ratios differ, and that each listed
+asset matches its own, is a small sign of care.
+
+\textbf{A favicon} and \textbf{a social preview image}, each with the exact tag
+needed to install it.
+
+\begin{honest}{None of the eleven exist, and the live site has at least one of them}
+The \file{assets/} folder contains exactly one file: this checklist. Every asset it
+calls ``required before launch'' is absent, so the design was never finished to the
+standard its own author set.
+
+The comparison that makes this sharp: fetching the live salmanadnan.com on
+2026-08-11 found \code{<meta property="og:image" content=
+"https://salmanadnan.com/assets/og.png">} along with explicit width and height
+tags. So the social preview image listed here as required does exist, for the build
+that replaced this one. This design was superseded by a version that finished the
+checklist.
+\end{honest}
+
+\begin{lstlisting}[firstnumber=20,caption={\file{ASSETS.md}, lines 20--32}]
+
+## Numbers to update
+
+Search for `data-target` in `index.html` (metrics band) and replace all four values with real numbers.
+Search for the three `hero-mini-num` divs in the hero and update those too.
+
+## Booking link
+
+Search for `YOUR_CAL_LINK` in `index.html` and replace with the actual booking URL.
+
+## Client names
+
+Three `<!-- UPDATE -->` comments in the work grid and case study sections mark placeholder client entries.
+\end{lstlisting}
+
+Line 23 is the metrics instruction, and line 24 is the one worth noticing.
+
+\begin{keyidea}{This file knows about the duplication and tells you to fix it in
+both places}
+Line 23 says to search for \code{data-target} in the metrics band. Line 24 then says
+to search for the three \code{hero-mini-num} divs and update those too.
+
+That is the author documenting, at the time of writing, that the same three numbers
+live in two places in two formats, as section 7.1 described. It was a recognised
+cost, accepted deliberately, and written down. That is a materially different thing
+from an accident, and it is why this document treats the duplication as a design
+trade rather than a defect.
+
+The sibling repository has no equivalent note because it has no hero statistics, and
+consequently no fallback when JavaScript does not run.
+\end{keyidea}
+
+Line 28 tells the reader to search for \code{YOUR\_CAL\_LINK}.
+
+\begin{honest}{Two of this file's three instructions are stale}
+Searching \file{index.html} for \code{YOUR\_CAL\_LINK} finds nothing. The literal
+placeholder was replaced on 2026-07-28 by commit \code{014406e}, which set the link
+to \code{cal.com/salman-adnan/meeting}, a real personal calendar. So somebody
+following this instruction searches, finds nothing, and cannot tell whether the job
+is done or the instruction is wrong. Here the job \emph{is} done, unlike in the
+sibling repository where the same stale instruction hides a link still pointing at
+another project's calendar.
+
+Line 32 is stale in a different way. It refers to ``three \code{<!-- UPDATE -->}
+comments in the work grid and case study sections'' marking placeholder client
+entries. There are no such comments anywhere in \file{index.html}: its
+\code{UPDATE} notes live in the banner comments at the top of each section and none
+of them is about client names. Either they were removed or they were never written.
+
+Only the metrics instruction on lines 23 and 24 is verifiably still accurate, and
+the \code{UPDATE} comment at \file{index.html} line 256 agrees with it.
+\end{honest}
+
+\subsubsection*{What it connects to}
+
+It describes \file{new-design-reference/index.html} and
+\file{new-design-reference/css/site.css} by name and by class, and it is the only
+file in the repository documenting the project's intent. Nothing reads it: it is for
+people.
+
+The deploy workflow explicitly excludes it from publication (line 82 of the
+workflow), which is the right instinct, and that exclusion no longer matches its
+path. See section 7.6.
+
+\subsubsection*{Concepts introduced}
+
+Markdown tables; \code{object-fit} and \code{object-position}, the two properties
+that control how an image fills a frame it does not exactly match; and the standard
+sizes for a favicon (32 by 32) and an Open Graph preview image (1200 by 630).
+
+\subsubsection*{How it breaks}
+
+As a document it cannot break. As a source of truth it already has: two of its three
+instructions describe a state of the code that no longer exists or never did, which
+is the characteristic failure of documentation kept beside code and not updated with
+it.
+
+\subsubsection*{Honest findings for this file}
+
+Two stale instructions (lines 28 and 32); eleven assets specified in useful detail
+and never delivered; and, to its credit, one instruction (lines 23 and 24) that is
+still exactly right and documents a known duplication rather than hiding it.
