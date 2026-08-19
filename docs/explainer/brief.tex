@@ -190,7 +190,7 @@ radii, a motion curve and a content width. Its own second line records the linea
 the tokens are shared with ai.digitalise.agency.
 
 \begin{keyidea}{Why the token names are numbers rather than colours}
-Calling a colour \code{--s1} instead of \code{--dark-navy} names what it is
+Calling a colour \code{-{}-s1} instead of \code{-{}-dark-navy} names what it is
 \emph{for} (the surface one step up from the page) rather than how it looks. This
 pair of repositories proves the point: the two stylesheets share every token
 \emph{name} and differ in nearly every token \emph{value}, so one vocabulary
@@ -269,7 +269,7 @@ it briefly.
 
 \begin{honest}{Restoring it unchanged would take the live site down}
 The \code{rsync} command copies the repository root, which since the move contains a
-folder rather than a home page, and it copies with \code{--delete}. So it would
+folder rather than a home page, and it copies with \code{-{}-delete}. So it would
 replace the live salmanadnan.com with a directory listing's worth of nothing. The
 correct source after the move is \code{new-design-reference/}.
 \end{honest}
@@ -477,13 +477,13 @@ link set here is the same one the live site uses today. Dormant since 2026-07-29
 \textbf{Do not:}
 \begin{itemize}
 \item Re-enable the workflow without changing the \code{rsync} source path. It would
-  copy a folder rather than a page, with \code{--delete} set, and take the live site
+  copy a folder rather than a page, with \code{-{}-delete} set, and take the live site
   down.
 \item Publish this design without the photograph.
 \item Trust \file{ASSETS.md}. Two of its three instructions refer to things no
   longer in the code, or never there.
 \item Fix the five blue literals by changing the token. The token is correct and the
-  literals are wrong; changing \code{--accent} back to blue would make five rules
+  literals are wrong; changing \code{-{}-accent} back to blue would make five rules
   consistent and the entire site wrong.
 \item Assume this repository is what visitors see. It is not.
 \end{itemize}
@@ -528,8 +528,8 @@ sibling relationship between two repositories that share a skeleton.
 \item[clamp] A CSS function taking a minimum, a preferred value and a maximum, used
   so headings scale with the window between fixed limits.
 \item[CSS] Cascading Style Sheets: the file controlling appearance.
-\item[Custom property] A named value in CSS, written \code{--name} and read with
-  \code{var(--name)}. The ``tokens'' are these.
+\item[Custom property] A named value in CSS, written \code{-{}-name} and read with
+  \code{var(-{}-name)}. The ``tokens'' are these.
 \item[Data attribute] An attribute beginning \code{data-} that HTML ignores and
   JavaScript can read.
 \item[Flexbox] A layout system arranging children in a row or a column.

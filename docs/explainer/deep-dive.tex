@@ -289,9 +289,9 @@ One thing on the page, created by a tag: a heading, a button, a box.
 
 \subsection{Custom properties: values named once}
 
-The stylesheet opens with a block giving names to values: \code{--accent:
-\#ff6719;} means ``from now on \code{--accent} stands for this orange''. The rest
-of the file writes \code{var(--accent)}.
+The stylesheet opens with a block giving names to values: \code{-{}-accent:
+\#ff6719;} means ``from now on \code{-{}-accent} stands for this orange''. The rest
+of the file writes \code{var(-{}-accent)}.
 
 \begin{jargon}{Hex colour}
 A colour written as a hash and six characters, three pairs giving red, green and
@@ -636,7 +636,7 @@ The \code{rsync} command copies \code{./}, the repository root, to
 \code{/root/salmanadnan.com/} on the server. When it was written,
 \file{index.html} was at that root; since \code{0dd839e} it is one level down. So
 a restored workflow would copy a folder called \file{new-design-reference} to the
-server, and because \code{--delete} is set it would remove the real site's files
+server, and because \code{-{}-delete} is set it would remove the real site's files
 in the same operation. The live salmanadnan.com would go down.
 
 The same commit that moved the files disabled the workflow, so the two changes are
@@ -676,7 +676,7 @@ it can be read as a list.
 
 \begin{honest}{Five places still use the agency blue on an orange-branded site}
 Commit \code{05210af} is titled ``Differentiate to orange brand''. The token block
-was duly changed: \code{--accent} became \code{\#ff6719}. But five rules further
+was duly changed: \code{-{}-accent} became \code{\#ff6719}. But five rules further
 down still hard-code the agency blue \code{rgba(25,103,255,...)} rather than
 reading the token:
 
@@ -713,9 +713,9 @@ the literals.
   the responsive block (line 559) is dead for the same reason. The intended layout
   happens anyway, by inline \code{order} properties on lines 322 and 340, so
   nothing looks wrong and three rules do nothing.
-\item \textbf{Four tokens are defined and never read}: \code{--s2},
-  \code{--accent2}, \code{--rsm} and \code{--shadow}. Counted mechanically; each
-  returns zero uses. \code{--accent2} is the agency blue, kept as a secondary
+\item \textbf{Four tokens are defined and never read}: \code{-{}-s2},
+  \code{-{}-accent2}, \code{-{}-rsm} and \code{-{}-shadow}. Counted mechanically; each
+  returns zero uses. \code{-{}-accent2} is the agency blue, kept as a secondary
   colour and then never used as one.
 \item \textbf{The class \code{counted} is added by the JavaScript and styled
   nowhere.}
@@ -732,7 +732,7 @@ the literals.
   it: it tells the reader to update both.
 \item \textbf{Two of the three instructions in \file{ASSETS.md} are stale.} It
   says to search for \code{YOUR\_CAL\_LINK}, which no longer exists, and refers to
-  three \code{<!-- UPDATE -->} comments in the work grid and case sections, which
+  three \code{<!-{}- UPDATE -{}->} comments in the work grid and case sections, which
   do not exist either.
 \item \textbf{The six project cards show a play button on hover and play
   nothing.} Unlike the sibling repository, these cards do not set
@@ -878,14 +878,14 @@ event recorded here and it was not technical.
 
 \begin{itemize}
 \item \textbf{Do not re-enable the workflow without changing the \code{rsync}
-  source path.} It would copy a folder rather than a page, with \code{--delete}
+  source path.} It would copy a folder rather than a page, with \code{-{}-delete}
   set, and take the live salmanadnan.com down.
 \item \textbf{Do not publish this design without the photograph.} The placeholder
   is the largest element on the page and it is addressed to the developer.
 \item \textbf{Do not trust \file{ASSETS.md}.} Two of its three instructions refer
   to things that are no longer in the code, or never were.
 \item \textbf{Do not fix the five blue literals by changing the token.} The token
-  is correct; the literals are wrong. Changing \code{--accent} back to blue would
+  is correct; the literals are wrong. Changing \code{-{}-accent} back to blue would
   make five rules consistent and the entire site wrong.
 \item \textbf{Do not assume this repository is what visitors see.} It is not.
 \end{itemize}
@@ -944,8 +944,8 @@ into the Caddy configuration on the VPS, where they would actually take effect.
 \item[clamp] A CSS function taking a minimum, a preferred value and a maximum.
 \item[Commit] One recorded change to a repository, with a message explaining it.
 \item[CSS] Cascading Style Sheets: the file controlling appearance.
-\item[Custom property] A named value in CSS, defined \code{--name} and read with
-  \code{var(--name)}.
+\item[Custom property] A named value in CSS, defined \code{-{}-name} and read with
+  \code{var(-{}-name)}.
 \item[Data attribute] An attribute beginning \code{data-} that HTML ignores and
   JavaScript can read.
 \item[Element] One thing on the page, produced by a tag.
@@ -1015,7 +1015,7 @@ Path & Coverage & Lines & Section \\
 
 \subsection*{Untracked directories (tier 3)}
 
-\textbf{There are none.} \code{git status --porcelain --ignored} produces no
+\textbf{There are none.} \code{git status -{}-porcelain -{}-ignored} produces no
 output at all: no ignored files, no build output, no dependency folder, and not
 even a \file{.gitignore}. Every file on disk is tracked and every tracked file is
 explained above.

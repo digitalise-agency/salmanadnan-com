@@ -277,21 +277,21 @@ Flag & What it does \\
 \midrule
 \code{-a} & archive mode: recurse, and preserve timestamps, permissions and links \\
 \code{-z} & compress during transfer \\
-\code{--no-owner} & do not try to set file ownership on the far end \\
-\code{--no-group} & do not try to set group ownership either \\
-\code{--omit-dir-times} & do not try to set directory timestamps \\
-\code{--delete} & remove files on the server that no longer exist here \\
+\code{-{}-no-owner} & do not try to set file ownership on the far end \\
+\code{-{}-no-group} & do not try to set group ownership either \\
+\code{-{}-omit-dir-times} & do not try to set directory timestamps \\
+\code{-{}-delete} & remove files on the server that no longer exist here \\
 \bottomrule
 \end{tabular}
 \caption{The \code{rsync} flags, and why each is present.}
 \end{table}
 
-The three \code{--no} and \code{--omit} flags all work around the same thing: the
+The three \code{-{}-no} and \code{-{}-omit} flags all work around the same thing: the
 \code{deploy} user does not own the target directory and cannot change ownership or
 directory timestamps. Without them \code{rsync} reports errors and fails. These
 flags are the surviving trace of the problem commit \code{431ebbf} was fixing.
 
-\code{--delete} deserves respect: it makes the server an exact mirror, so removing a
+\code{-{}-delete} deserves respect: it makes the server an exact mirror, so removing a
 file here removes it there. That is usually what you want, and it is also the flag
 that turns a mistaken source path into a wiped site.
 
@@ -310,7 +310,7 @@ would copy the directory itself into the target, producing a nested folder.
 \code{./} was the right source when \file{index.html} sat at the repository root.
 Since commit \code{0dd839e} moved everything one level down, \code{./} contains a
 single folder called \file{new-design-reference}. Restoring this workflow unchanged
-would copy that folder to the server and, because \code{--delete} is set, remove the
+would copy that folder to the server and, because \code{-{}-delete} is set, remove the
 real site's files in the same operation.
 
 This is not hypothetical harm. Section 1.2 established that salmanadnan.com is live,
@@ -323,7 +323,7 @@ other.
 \end{honest}
 
 \begin{honest}{The exclusion for the checklist no longer matches}
-\code{--exclude 'assets/ASSETS.md'} was correct when that path was correct. The file
+\code{-{}-exclude 'assets/ASSETS.md'} was correct when that path was correct. The file
 now lives at \file{new-design-reference/assets/ASSETS.md}, which this pattern does
 not match, so a restored workflow would publish the internal checklist, including
 its instruction to drop a photograph in, to the public internet.
@@ -376,7 +376,7 @@ Line 99 uses \code{::warning::} rather than \code{::error::}, and the step does 
 exit with a failure code. So if the site never came back, the workflow would still
 finish green with a warning buried in the log.
 
-Given that the preceding step ran \code{rsync --delete} against a live site, this is
+Given that the preceding step ran \code{rsync -{}-delete} against a live site, this is
 the one moment you would want a loud red failure and an email. It is the clearest
 correctness weakness in the workflow, and it is one word to fix.
 \end{honest}
@@ -411,7 +411,7 @@ archive and delete semantics; retry loops with growing backoff; and the
 
 \begin{itemize}
 \item \textbf{Restored unchanged}, it copies the wrong directory and, with
-  \code{--delete}, takes down the live salmanadnan.com.
+  \code{-{}-delete}, takes down the live salmanadnan.com.
 \item \textbf{A missing or wrong \code{VPS\_SSH\_KEY}} fails at the \code{rsync}
   step after three attempts. Commit \code{cfa65d7} fixed this.
 \item \textbf{A \code{deploy} user without permission to traverse into

@@ -167,7 +167,7 @@ Line 17 closes the head.
 
 Line 18 opens \code{<body>}. Everything to line 394 is what a visitor sees.
 
-Lines 20 to 22 are a comment banner. Anything between \code{<!--} and \code{-->} is
+Lines 20 to 22 are a comment banner. Anything between \code{<!-{}-} and \code{-{}->} is
 ignored entirely by the browser. This file uses six of these as signposts, one per
 band, each drawn with a rule of repeated double-line characters. They are the
 author's table of contents and the reason a 395-line file stays navigable.
@@ -304,8 +304,8 @@ line 75, each matching a tinted background defined at \file{site.css} lines 230 
 choice, and it is the only appearance of blue in this file that is plainly
 intentional rather than left over from the sibling.
 
-It is still written as three literals where two tokens exist (\code{--accent2} is
-exactly this blue and is otherwise never used, and \code{--green} is exactly that
+It is still written as three literals where two tokens exist (\code{-{}-accent2} is
+exactly this blue and is otherwise never used, and \code{-{}-green} is exactly that
 green). Section 7.2 covers what that costs.
 \end{honest}
 
@@ -331,7 +331,7 @@ appear twice more before the page ends.
 
 Structurally identical, with an upward-trending chart icon in orange and the claim
 ``1.6M+ views / organic, for clients''. The orange \code{\#ff6719} here is the
-brand accent written literally rather than as \code{var(--accent)}.
+brand accent written literally rather than as \code{var(-{}-accent)}.
 
 \paragraph{Lines 72 to 86: the third badge, and the end of the photo column.}
 
@@ -355,7 +355,7 @@ brand accent written literally rather than as \code{var(--accent)}.
 
 The third badge uses the tick-in-a-circle icon and the claim ``300\% avg growth /
 across client sites''. Its green is \code{\#34d399}, which is exactly the value of
-the \code{--green} token defined at \file{site.css} line 15 and written literally
+the \code{-{}-green} token defined at \file{site.css} line 15 and written literally
 here.
 
 Line 85 closes the frame and line 86 closes the column, with a trailing comment
@@ -541,7 +541,7 @@ right is how a screen-reader user navigates a long page, and this file gets it
 right.
 
 Line 145 gives the grid the class \code{stagger}, and each card carries
-\code{style="--i:0"} and so on. That custom property is multiplied by 90
+\code{style="-{}-i:0"} and so on. That custom property is multiplied by 90
 milliseconds at \file{site.css} line 86 to delay each child's fade-in, so the cards
 appear in sequence rather than together. Setting a custom property inline is the
 cleanest way to pass a per-element number to CSS.
