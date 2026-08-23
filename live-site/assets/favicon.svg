@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Salman Adnan">
+  <!-- A shell prompt, abstracted: chevron and cursor bar. Drawn as paths, never
+       as <text>, because a favicon is rendered in places that have none of the
+       site's fonts (the browser tab, and ImageMagick when build-agency.py
+       re-renders the PNGs), and a substituted font is a different mark.
+       Square corners and the site palette, so the tab matches the pages:
+       ink #16130E, cream #FFFDF5, coral #F03E3E, and the same zero radius. -->
+  <rect width="64" height="64" fill="#16130E"/>
+  <path d="M14 18 L24 32 L14 46" fill="none" stroke="#FFFDF5" stroke-width="7"
+        stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect x="32" y="40" width="20" height="7" fill="#F03E3E"/>
+</svg>

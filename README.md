@@ -1,7 +1,11 @@
 # salmanadnan-com
 
-**This repository is not the live site.** Checked on 2026-08-23, and worth
-stating plainly before anyone edits something here expecting it to ship.
+**The live site is now in here, under `live-site/`.** Imported 2026-08-23,
+byte for byte from `/root/salmanadnan.com` on the VPS, which until that day was
+the only copy in existence.
+
+`new-design-reference/` is a separate thing: a proposed redesign, deployed
+nowhere. Do not confuse the two.
 
 ## What is actually where
 
@@ -9,7 +13,7 @@ Three different versions of this site exist, and no two of them match.
 
 | Version | Where it lives | In git? |
 |---|---|---|
-| The live site | `/root/salmanadnan.com` on the VPS | **No.** Not a checkout, not in any repository here |
+| The live site | `/root/salmanadnan.com` on the VPS | **Yes, now.** Mirrored here in `live-site/` since 2026-08-23 |
 | An unlisted preview | `/srv/digitalise-agency/second-option/salmanadnan` on the VPS, served at `/second-option-test-it-out/` | **No** |
 | `new-design-reference/` | This repository | Yes, and deployed nowhere |
 
@@ -21,14 +25,24 @@ for the unlisted preview, which carries `X-Robots-Tag: noindex, nofollow` so it
 stays reachable by direct link only. That vhost lives in the `auth-digitalise`
 repository, at `edge/Caddyfile`, not here.
 
-## The thing worth fixing
+## What was fixed, and what is still owed
 
-**The live site is in no repository at all.** It sits in one directory on one
-machine, owned by `ubuntu`, and if that disk goes the site goes with it. There
-is no history, nothing to diff against, and no way to tell what changed or when.
-That is the same gap that has already cost this estate time on other properties.
+The live site is now in version control. It was not, until 2026-08-23: one
+directory on one machine, owned by `ubuntu`, no history, nothing to diff
+against.
 
-Getting it into version control is a small job and nobody has done it.
+**What is still owed: nothing syncs the two.** `live-site/` is a snapshot taken
+on the day it was imported. Edit the box and this goes stale; edit this and the
+box never sees it. Until a deploy path exists, treat the box as authoritative
+and re-import after changing it:
+
+```bash
+rsync -az --delete --exclude '.git' da:/root/salmanadnan.com/ live-site/
+git diff --stat
+```
+
+If that diff is ever non-empty when you did not expect it, somebody edited the
+live site by hand.
 
 ## The deploy workflow is disabled
 
