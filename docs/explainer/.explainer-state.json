@@ -1,22 +1,29 @@
 {
   "schema": 2,
-  "project": "salmanadnan-com",
-  "last_commit": "0dd839e84059d8f62e0574e2f6dfeb19cdc9ae33",
-  "last_generated": "2026-08-11",
-  "head_subject": "Move new design into new-design-reference and disable auto-deploy",
-  "tracked_files": 6,
-  "coverage": "exhaustive",
+  "last_commit": "6dd667e",
+  "last_generated": "2026-09-04",
+  "coverage": "exhaustive over the audited population of 187 (git ls-files reports 193; 6 are this skill's own output in docs/explainer/ and are excluded by coverage-audit.sh by design). 97 tier-1 with full anatomy, 90 tier-2 declared.",
+  "notes": "INCREMENTAL UPDATE 2026-09-04. 4 commits since 0dd839e. 181 new files added by 6dd667e (Import the live site), plus README.md by 3bf700b. The live site (live-site/) is a static portfolio at salmanadnan.com: index.html, styles.css, script.js, privacy.html, terms.html, robots.txt, sitemap.xml, 35 project pages, 35 viz pages, 3 config/meta files, 90 binary assets (PNG OG images, WebP screenshots, fonts, SVG logos). Previously the repo only had the design reference and a disabled deploy workflow (6 files).",
+  "reconciles": true,
   "ledger": {
-    "tier1_explained_in_full": 6,
-    "tier2_declared_and_summarized": 0,
+    "tier1_explained_in_full": 97,
+    "tier2_declared_and_summarized": 90,
     "tier3_excluded_dirs": [],
     "reconciles": true,
-    "tier2_reasons": {},
-    "total_lines": 1180
+    "audited_population": 187,
+    "outside_audit_scope": {
+      "docs/explainer": 6
+    },
+    "note": "97 + 90 = 187, matching git ls-files excluding docs/explainer. Verified by coverage-audit.sh: 0 files never named."
   },
   "docs": {
-    "deep-dive": { "file": "deep-dive.pdf", "pages": 75, "parts": 6 },
-    "brief": { "file": "brief.pdf", "pages": 11 }
-  },
-  "notes": "First documentation of this repository; it was absent from assets/projects.json until 2026-08-11 and had never been documented. All 6 tracked files are tier 1, quoted first line to last: no generated, vendored, minified or binary content (generator-banner grep returned nothing), and no tier 3, because `git status --porcelain --ignored` is empty and there is no .gitignore. Sections: front matter 1-6, walkthroughs 7.1 index.html, 7.2 site.css, 7.3 main.js, 7.4 netlify.toml, 7.5 ASSETS.md, 7.6 deploy.yml.disabled (one parts/ file each), 8-16, Appendix A. VERIFICATION: every listing was spliced from the source mechanically (assets/verify-listings.py reports 47 listings, 0 mismatches, and the quoted ranges cover lines 1..N of all six files with no gaps). EM-DASH GREP: the sole hit in any .tex is the Markdown table separator |---|---| quoted verbatim from ASSETS.md line 8, inside a verbatim lstlisting, so it renders as three hyphens and not an em-dash; the quotation was kept faithful. TWO CENTRAL FACTS for a future run. (1) This repo is NOT the live salmanadnan.com: commit 0dd839e parked the design under new-design-reference/ and disabled the workflow; on 2026-08-11 the live address returned 200 from 46.202.194.85 (the VPS named in the workflow comment) serving a different build with a different title, a correct canonical and an og:image, and sharing only the cal.com/salman-adnan/meeting booking link. (2) THE DESIGN IS UNFINISHED, not merely parked: the hero's left half is a styled, visible placeholder reading 'Drop Salman's photo here / assets/salman.jpg', and none of the 11 assets in ASSETS.md exist. CROSS-REPO: this is the twin of ai-digitalise (same six paths, same skeleton, same fate, blue instead of orange); both explainers cross-reference each other. Fetching both live sites established that live ai.digitalise.agency declares salmanadnan.com as its canonical URL, i.e. the agency page was built from this personal site's build and the canonical was never changed. That is a bug in the portfolio repo which neither of these two repos contains; it is recorded in both documents so it is not lost. If a later run finds the workflow re-enabled, check the rsync source path first: it still says ./ and would now publish a folder rather than a page, with --delete set, against a LIVE site."
+    "deep-dive": {
+      "file": "deep-dive.pdf",
+      "pages": 76
+    },
+    "brief": {
+      "file": "brief.pdf",
+      "pages": 7
+    }
+  }
 }
